@@ -24,7 +24,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
     name = "Always Hear Drops",
-    description = "Hear valuable/untradeable drop sounds even when Sound Effects volume is muted. No external audio files needed — uses native in-game sound IDs.",
+    description = "Even if ingame sounds are off! Hear valuable/untradeable drop notifications. No audio files needed, uses in-game sound IDs.",
     tags = {"drops", "valuable", "untradeable", "sound", "notification", "muted", "loot", "rare", "alert", "audio"}
 )
 public class AlwaysHearDropsPlugin extends Plugin
