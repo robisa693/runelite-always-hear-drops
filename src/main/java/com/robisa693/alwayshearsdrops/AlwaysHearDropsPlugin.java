@@ -16,6 +16,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @PluginDescriptor(
     name = "Always Hear Drops",
@@ -24,6 +26,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 )
 public class AlwaysHearDropsPlugin extends Plugin
 {
+    private static final Logger log = LoggerFactory.getLogger(AlwaysHearDropsPlugin.class);
+
     private static final Pattern VALUABLE_DROP_PATTERN = Pattern.compile(
         "Valuable drop: (.+) \\(([\\d,]+) coins\\)"
     );
@@ -59,6 +63,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Override
     protected void startUp()
     {
+        log.info("Plugin started");
         reloadConfig();
     }
 
@@ -97,6 +102,7 @@ public class AlwaysHearDropsPlugin extends Plugin
         lowPrayerThreshold = config.lowPrayerThreshold();
         lowPrayerSoundEffectId = config.lowPrayerSoundEffectId();
         lowPrayerRepeat = config.lowPrayerRepeat();
+        log.info("reloadConfig: enabled={}, threshold={}, repeat={}, soundId={}", lowPrayerEnabled, lowPrayerThreshold, lowPrayerRepeat, lowPrayerSoundEffectId);
     }
 
     @Subscribe
@@ -112,12 +118,17 @@ public class AlwaysHearDropsPlugin extends Plugin
         {
             if (!prayerSoundPlayed)
             {
+                log.info("onGameTick: prayer {} <= threshold {}, triggering", currentPrayer, lowPrayerThreshold);
                 playPrayerSound();
                 prayerSoundPlayed = true;
             }
         }
         else
         {
+            if (prayerSoundPlayed)
+            {
+                log.info("onGameTick: prayer {} > threshold {}, resetting flag", currentPrayer, lowPrayerThreshold);
+            }
             prayerSoundPlayed = false;
         }
     }
@@ -162,13 +173,14 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     private void playPrayerSound()
     {
+        log.info("playPrayerSound called, repeat={}, id={}, vol={}", lowPrayerRepeat, lowPrayerSoundEffectId, volume);
         clientThread.invoke(() -> {
+            log.info("Playing prayer sound #1 id={}", lowPrayerSoundEffectId);
             client.playSoundEffect(lowPrayerSoundEffectId, volume);
             if (lowPrayerRepeat)
             {
-                clientThread.invokeLater(() ->
-                    client.playSoundEffect(lowPrayerSoundEffectId, volume)
-                );
+                log.info("Playing prayer sound #2 (same id)");
+                client.playSoundEffect(lowPrayerSoundEffectId, volume);
             }
         });
     }
