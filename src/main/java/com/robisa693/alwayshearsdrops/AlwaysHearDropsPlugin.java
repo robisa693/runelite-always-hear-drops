@@ -6,8 +6,10 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.Skill;
 import net.runelite.api.SoundEffectVolume;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameTick;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -42,6 +44,10 @@ public class AlwaysHearDropsPlugin extends Plugin
     private boolean untradeableDrops;
     private int volume;
     private int soundEffectId;
+    private boolean lowPrayerEnabled;
+    private int lowPrayerThreshold;
+    private int lowPrayerSoundEffectId;
+    private boolean prayerSoundPlayed;
 
     @Provides
     AlwaysHearDropsConfig getConfig(ConfigManager configManager)
@@ -86,6 +92,32 @@ public class AlwaysHearDropsPlugin extends Plugin
         untradeableDrops = config.untradeableDrops();
         volume = (config.replayVolume() * SoundEffectVolume.HIGH) / 100;
         soundEffectId = config.soundEffectId();
+        lowPrayerEnabled = config.lowPrayerEnabled();
+        lowPrayerThreshold = config.lowPrayerThreshold();
+        lowPrayerSoundEffectId = config.lowPrayerSoundEffectId();
+    }
+
+    @Subscribe
+    public void onGameTick(GameTick event)
+    {
+        if (!lowPrayerEnabled)
+        {
+            return;
+        }
+
+        int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
+        if (currentPrayer <= lowPrayerThreshold)
+        {
+            if (!prayerSoundPlayed)
+            {
+                playPrayerSound();
+                prayerSoundPlayed = true;
+            }
+        }
+        else
+        {
+            prayerSoundPlayed = false;
+        }
     }
 
     @Subscribe
@@ -124,5 +156,10 @@ public class AlwaysHearDropsPlugin extends Plugin
     private void playDropSound()
     {
         clientThread.invoke(() -> client.playSoundEffect(soundEffectId, volume));
+    }
+
+    private void playPrayerSound()
+    {
+        clientThread.invoke(() -> client.playSoundEffect(lowPrayerSoundEffectId, volume));
     }
 }

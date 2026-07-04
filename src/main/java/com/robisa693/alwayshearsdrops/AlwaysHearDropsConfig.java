@@ -19,11 +19,35 @@ public interface AlwaysHearDropsConfig extends Config
         return false;
     }
 
+    @Range(min = 0, max = 100)
+    @ConfigItem(
+        keyName = "replayVolume",
+        name = "Volume",
+        description = "Volume of the replayed drop sound (0-100). Multiplied by the in-game Sound Effects volume if not muted.",
+        position = 1
+    )
+    default int replayVolume()
+    {
+        return 100;
+    }
+
+    @Range(min = 0, max = 11000)
+    @ConfigItem(
+        keyName = "soundEffectId",
+        name = "Drop Sound ID",
+        description = "The game sound effect ID to play for drops. 2739=item drop, 3406=coins jingle, 4218=league trophy, 6765=unique drop, 3924=GE coins. Check OSRS Wiki for more.",
+        position = 2
+    )
+    default int soundEffectId()
+    {
+        return 6765;
+    }
+
     @ConfigItem(
         keyName = "threshold",
-        name = "Minimum value",
+        name = "Drop value Threshold",
         description = "Minimum coin value of a valuable drop to trigger the sound (0 = all valuable drops).",
-        position = 1
+        position = 3
     )
     default int threshold()
     {
@@ -34,45 +58,55 @@ public interface AlwaysHearDropsConfig extends Config
         keyName = "untradeableDrops",
         name = "Untradeable drops",
         description = "Also play sound for untradeable drops.",
-        position = 2
+        position = 4
     )
     default boolean untradeableDrops()
     {
         return false;
     }
 
-    @Range(min = 0, max = 100)
-    @ConfigItem(
-        keyName = "replayVolume",
-        name = "Volume",
-        description = "Volume of the replayed drop sound (0-100). Multiplied by the in-game Sound Effects volume if not muted.",
-        position = 3
-    )
-    default int replayVolume()
-    {
-        return 100;
-    }
-
     @ConfigItem(
         keyName = "testDrop",
         name = "Test drop sound",
         description = "Toggle to test the notification sound. Uncheck then recheck to test again.",
-        position = 4
+        position = 5
     )
     default boolean testDrop()
     {
         return false;
     }
 
+    @ConfigItem(
+        keyName = "lowPrayerEnabled",
+        name = "Low Prayer sound",
+        description = "Play a sound when your prayer points drop at or below the threshold.",
+        position = 6
+    )
+    default boolean lowPrayerEnabled()
+    {
+        return false;
+    }
+
+    @ConfigItem(
+        keyName = "lowPrayerThreshold",
+        name = "Low Prayer threshold",
+        description = "Play sound when prayer points are at or below this value.",
+        position = 7
+    )
+    default int lowPrayerThreshold()
+    {
+        return 20;
+    }
+
     @Range(min = 0, max = 11000)
     @ConfigItem(
-        keyName = "soundEffectId",
-        name = "Sound Effect ID",
-        description = "The game sound effect ID to play. 2739=item drop, 3406=coins jingle, 4218=league trophy, 6765=unique drop, 3924=GE coins. Check OSRS Wiki for more.",
-        position = 5
+        keyName = "lowPrayerSoundEffectId",
+        name = "Low Prayer Sound ID",
+        description = "The game sound effect ID to play for low prayer. 932=bell.",
+        position = 8
     )
-    default int soundEffectId()
+    default int lowPrayerSoundEffectId()
     {
-        return 6765;
+        return 932;
     }
 }
