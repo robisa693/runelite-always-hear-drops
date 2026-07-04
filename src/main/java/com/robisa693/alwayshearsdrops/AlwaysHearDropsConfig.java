@@ -109,4 +109,15 @@ public interface AlwaysHearDropsConfig extends Config
     {
         return 932;
     }
+
+    @ConfigItem(
+        keyName = "lowPrayerRepeat",
+        name = "Repeat prayer sound",
+        description = "Play the low prayer sound twice when triggered.",
+        position = 9
+    )
+    default boolean lowPrayerRepeat()
+    {
+        return false;
+    }
 }

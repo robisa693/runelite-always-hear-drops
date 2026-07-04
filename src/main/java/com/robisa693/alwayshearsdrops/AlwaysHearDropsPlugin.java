@@ -47,6 +47,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     private boolean lowPrayerEnabled;
     private int lowPrayerThreshold;
     private int lowPrayerSoundEffectId;
+    private boolean lowPrayerRepeat;
     private boolean prayerSoundPlayed;
 
     @Provides
@@ -95,6 +96,7 @@ public class AlwaysHearDropsPlugin extends Plugin
         lowPrayerEnabled = config.lowPrayerEnabled();
         lowPrayerThreshold = config.lowPrayerThreshold();
         lowPrayerSoundEffectId = config.lowPrayerSoundEffectId();
+        lowPrayerRepeat = config.lowPrayerRepeat();
     }
 
     @Subscribe
@@ -160,6 +162,12 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     private void playPrayerSound()
     {
-        clientThread.invoke(() -> client.playSoundEffect(lowPrayerSoundEffectId, volume));
+        clientThread.invoke(() -> {
+            client.playSoundEffect(lowPrayerSoundEffectId, volume);
+            if (lowPrayerRepeat)
+            {
+                client.playSoundEffect(lowPrayerSoundEffectId, volume);
+            }
+        });
     }
 }
