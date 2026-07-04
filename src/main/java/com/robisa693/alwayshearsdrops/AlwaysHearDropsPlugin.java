@@ -36,9 +36,6 @@ public class AlwaysHearDropsPlugin extends Plugin
     private Client client;
 
     @Inject
-    private ConfigManager configManager;
-
-    @Inject
     private ClientThread clientThread;
 
     private int threshold;
