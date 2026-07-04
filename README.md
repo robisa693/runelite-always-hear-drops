@@ -1,10 +1,14 @@
 # Always Hear Drops
 
-RuneLite plugin that plays a game sound effect when you receive valuable or untradeable drop notifications, even when your in-game Sound Effects volume is muted.
+RuneLite plugin that plays a game sound effect when you receive valuable or untradeable drop notifications — **works even with in-game Sound Effects volume fully muted**, and **requires no external audio files**.
+
+Unlike similar plugins, Always Hear Drops uses OSRS's built-in sound effect engine, letting you pick any in-game sound ID. No downloading, bundling, or recording audio files needed.
 
 ## Features
 
 - Plays a sound for **Valuable drop:** and **Untradeable drop:** chat messages
+- **Works with in-game Sound Effects volume muted** — no need to keep game sounds on
+- **No external audio files** — uses native in-game sound IDs
 - Configurable minimum coin value threshold
 - Configurable volume (0–100)
 - Configurable sound effect ID (default: 6765 — unique drop sound)
