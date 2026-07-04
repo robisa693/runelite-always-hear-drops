@@ -1,9 +1,15 @@
 package com.robisa693.alwayshearsdrops;
 
 import com.google.inject.Provides;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.KeyboardFocusManager;
+import java.awt.Window;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import javax.swing.JCheckBox;
+import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
@@ -77,6 +83,8 @@ public class AlwaysHearDropsPlugin extends Plugin
             if (event.getNewValue().equals("true"))
             {
                 playDropSound();
+                configManager.setConfiguration("alwayshearsdrops", "testDrop", false);
+                SwingUtilities.invokeLater(this::syncCheckboxState);
             }
             return;
         }
@@ -87,6 +95,35 @@ public class AlwaysHearDropsPlugin extends Plugin
         }
 
         reloadConfig();
+    }
+
+    private void syncCheckboxState()
+    {
+        Window window = KeyboardFocusManager.getCurrentKeyboardFocusManager().getActiveWindow();
+        if (window != null)
+        {
+            syncContainer(window);
+        }
+    }
+
+    private void syncContainer(Container container)
+    {
+        for (Component comp : container.getComponents())
+        {
+            if (comp instanceof JCheckBox)
+            {
+                JCheckBox cb = (JCheckBox) comp;
+                boolean stored = config.testDrop();
+                if (cb.isSelected() != stored)
+                {
+                    cb.setSelected(stored);
+                }
+            }
+            if (comp instanceof Container)
+            {
+                syncContainer((Container) comp);
+            }
+        }
     }
 
     private void reloadConfig()
