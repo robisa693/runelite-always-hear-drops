@@ -118,6 +118,6 @@ public interface AlwaysHearDropsConfig extends Config
     )
     default boolean lowPrayerRepeat()
     {
-        return false;
+        return true;
     }
 }
