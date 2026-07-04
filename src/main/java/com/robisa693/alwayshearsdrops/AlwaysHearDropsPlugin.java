@@ -81,6 +81,11 @@ public class AlwaysHearDropsPlugin extends Plugin
             return;
         }
 
+        if (event.getKey().equals("inGameSetup"))
+        {
+            return;
+        }
+
         reloadConfig();
     }
 
