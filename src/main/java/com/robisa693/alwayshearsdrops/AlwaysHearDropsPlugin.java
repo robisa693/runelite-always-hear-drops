@@ -9,7 +9,6 @@ import net.runelite.api.Client;
 import net.runelite.api.SoundEffectID;
 import net.runelite.api.SoundEffectVolume;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.client.chat.ChatCommandManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -36,9 +35,6 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Inject
     private Client client;
 
-    @Inject
-    private ChatCommandManager chatCommandManager;
-
     private boolean enabled;
     private int threshold;
     private boolean untradeableDrops;
@@ -54,13 +50,6 @@ public class AlwaysHearDropsPlugin extends Plugin
     protected void startUp()
     {
         reloadConfig();
-        chatCommandManager.registerCommandAsync("testdrop", (chatMessage, message) -> playDropSound());
-    }
-
-    @Override
-    protected void shutDown()
-    {
-        chatCommandManager.unregisterCommand("testdrop");
     }
 
     @Subscribe
@@ -89,13 +78,19 @@ public class AlwaysHearDropsPlugin extends Plugin
             return;
         }
 
+        String message = event.getMessage();
+
+        if (message.startsWith("::testdrop"))
+        {
+            playDropSound();
+            return;
+        }
+
         if (event.getType() != ChatMessageType.GAMEMESSAGE
             && event.getType() != ChatMessageType.SPAM)
         {
             return;
         }
-
-        String message = event.getMessage();
 
         Matcher valuableMatcher = VALUABLE_DROP_PATTERN.matcher(message);
         if (valuableMatcher.find())
