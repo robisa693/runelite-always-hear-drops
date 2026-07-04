@@ -9,16 +9,6 @@ import net.runelite.client.config.Range;
 public interface AlwaysHearDropsConfig extends Config
 {
     @ConfigItem(
-        keyName = "enabled",
-        name = "Enabled",
-        description = "Enable the plugin."
-    )
-    default boolean enabled()
-    {
-        return true;
-    }
-
-    @ConfigItem(
         keyName = "threshold",
         name = "Minimum value",
         description = "Minimum coin value of a valuable drop to trigger the sound (0 = all valuable drops)."
@@ -67,6 +57,6 @@ public interface AlwaysHearDropsConfig extends Config
     )
     default int soundEffectId()
     {
-        return 3406;
+        return 6765;
     }
 }

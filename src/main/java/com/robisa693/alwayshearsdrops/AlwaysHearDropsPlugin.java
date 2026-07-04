@@ -44,7 +44,6 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Inject
     private ClientThread clientThread;
 
-    private boolean enabled;
     private int threshold;
     private boolean untradeableDrops;
     private int volume;
@@ -85,23 +84,17 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     private void reloadConfig()
     {
-        enabled = config.enabled();
         threshold = config.threshold();
         untradeableDrops = config.untradeableDrops();
         volume = (config.replayVolume() * SoundEffectVolume.HIGH) / 100;
         soundEffectId = config.soundEffectId();
-        log.info("Config reloaded: enabled={}, threshold={}, untradeable={}, volume={}, soundId={}",
-            enabled, threshold, untradeableDrops, volume, soundEffectId);
+        log.info("Config reloaded: threshold={}, untradeable={}, volume={}, soundId={}",
+            threshold, untradeableDrops, volume, soundEffectId);
     }
 
     @Subscribe
     public void onChatMessage(ChatMessage event)
     {
-        if (!enabled)
-        {
-            return;
-        }
-
         String message = event.getMessage();
         log.debug("ChatMessage: type={}, message={}", event.getType(), message);
 
