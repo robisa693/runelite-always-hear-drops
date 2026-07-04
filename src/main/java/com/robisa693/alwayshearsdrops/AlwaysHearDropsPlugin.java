@@ -72,10 +72,12 @@ public class AlwaysHearDropsPlugin extends Plugin
 
         log.info("Config changed: {} = {}", event.getKey(), event.getNewValue());
 
-        if (event.getKey().equals("testDrop") && event.getNewValue().equals("true"))
+        if (event.getKey().equals("testDrop"))
         {
-            playDropSound();
-            configManager.setConfiguration("alwayshearsdrops", "testDrop", false);
+            if (event.getNewValue().equals("true"))
+            {
+                playDropSound();
+            }
             return;
         }
 

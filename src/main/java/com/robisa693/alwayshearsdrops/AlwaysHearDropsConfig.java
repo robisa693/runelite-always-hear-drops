@@ -42,7 +42,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "testDrop",
         name = "Test drop sound",
-        description = "Toggle to test the notification sound (auto-resets)."
+        description = "Toggle to test the notification sound. Uncheck then recheck to test again."
     )
     default boolean testDrop()
     {
