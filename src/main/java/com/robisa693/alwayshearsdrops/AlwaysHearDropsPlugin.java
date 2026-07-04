@@ -7,7 +7,6 @@ import javax.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
-import net.runelite.api.SoundEffectID;
 import net.runelite.api.SoundEffectVolume;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.client.callback.ClientThread;
@@ -49,6 +48,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     private int threshold;
     private boolean untradeableDrops;
     private int volume;
+    private int soundEffectId;
 
     @Provides
     AlwaysHearDropsConfig getConfig(ConfigManager configManager)
@@ -89,8 +89,9 @@ public class AlwaysHearDropsPlugin extends Plugin
         threshold = config.threshold();
         untradeableDrops = config.untradeableDrops();
         volume = (config.replayVolume() * SoundEffectVolume.HIGH) / 100;
-        log.info("Config reloaded: enabled={}, threshold={}, untradeable={}, volume={}",
-            enabled, threshold, untradeableDrops, volume);
+        soundEffectId = config.soundEffectId();
+        log.info("Config reloaded: enabled={}, threshold={}, untradeable={}, volume={}, soundId={}",
+            enabled, threshold, untradeableDrops, volume, soundEffectId);
     }
 
     @Subscribe
@@ -134,7 +135,7 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     private void playDropSound()
     {
-        log.info("Playing drop sound at volume {}", volume);
-        clientThread.invoke(() -> client.playSoundEffect(SoundEffectID.ITEM_DROP, volume));
+        log.info("Playing drop sound {} at volume {}", soundEffectId, volume);
+        clientThread.invoke(() -> client.playSoundEffect(soundEffectId, volume));
     }
 }
