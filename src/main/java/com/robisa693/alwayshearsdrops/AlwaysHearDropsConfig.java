@@ -10,7 +10,7 @@ public interface AlwaysHearDropsConfig extends Config
 {
     @ConfigItem(
         keyName = "inGameSetup",
-        name = "<html><b style='color:orange'>Required In-Game Settings</b><br>Set these in OSRS Settings &gt; All Settings &gt; Loot Drops:<br>• Loot drop notification: <b>All</b><br>• Minimum item value: <b>0</b> (or your threshold)</html>",
+        name = "<html><b style='color:orange'>Required In-Game Settings</b><br>Set these in OSRS Settings &gt; All Settings &gt; Loot Drops:<br>• Loot drop notification: <b>All</b><br>• Minimum item value: <b>0</b> (or your threshold)<br><br>Note: if Sound Effects volume is not muted,<br>your game SE slider also controls replay volume</html>",
         description = "These OSRS game settings must be configured for the plugin to receive drop chat messages.",
         position = 0
     )
@@ -45,7 +45,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "replayVolume",
         name = "Volume",
-        description = "Volume of the replayed drop sound (0-100).",
+        description = "Volume of the replayed drop sound (0-100). Multiplied by the in-game Sound Effects volume if not muted.",
         position = 3
     )
     default int replayVolume()
