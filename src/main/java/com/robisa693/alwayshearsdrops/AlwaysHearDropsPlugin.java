@@ -10,6 +10,7 @@ import net.runelite.api.Client;
 import net.runelite.api.SoundEffectID;
 import net.runelite.api.SoundEffectVolume;
 import net.runelite.api.events.ChatMessage;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
@@ -40,6 +41,9 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     @Inject
     private ConfigManager configManager;
+
+    @Inject
+    private ClientThread clientThread;
 
     private boolean enabled;
     private int threshold;
@@ -131,6 +135,6 @@ public class AlwaysHearDropsPlugin extends Plugin
     private void playDropSound()
     {
         log.info("Playing drop sound at volume {}", volume);
-        client.playSoundEffect(SoundEffectID.ITEM_DROP, volume);
+        clientThread.invoke(() -> client.playSoundEffect(SoundEffectID.ITEM_DROP, volume));
     }
 }
