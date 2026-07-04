@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -110,7 +111,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     {
         for (Component comp : container.getComponents())
         {
-            if (comp instanceof JCheckBox)
+            if (comp instanceof JCheckBox && hasSiblingLabel((JCheckBox) comp, "Test drop sound"))
             {
                 JCheckBox cb = (JCheckBox) comp;
                 boolean stored = config.testDrop();
@@ -124,6 +125,22 @@ public class AlwaysHearDropsPlugin extends Plugin
                 syncContainer((Container) comp);
             }
         }
+    }
+
+    private boolean hasSiblingLabel(JCheckBox cb, String text)
+    {
+        Container parent = cb.getParent();
+        if (parent != null)
+        {
+            for (Component sibling : parent.getComponents())
+            {
+                if (sibling instanceof JLabel && text.equals(((JLabel) sibling).getText()))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void reloadConfig()
