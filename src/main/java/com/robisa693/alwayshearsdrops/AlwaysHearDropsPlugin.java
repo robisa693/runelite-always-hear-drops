@@ -4,6 +4,7 @@ import com.google.inject.Provides;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.SoundEffectID;
@@ -14,6 +15,8 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+
+@Slf4j
 
 @PluginDescriptor(
     name = "Always Hear Drops",
@@ -35,6 +38,9 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Inject
     private Client client;
 
+    @Inject
+    private ConfigManager configManager;
+
     private boolean enabled;
     private int threshold;
     private boolean untradeableDrops;
@@ -49,6 +55,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Override
     protected void startUp()
     {
+        log.info("Always Hear Drops plugin started");
         reloadConfig();
     }
 
@@ -59,6 +66,16 @@ public class AlwaysHearDropsPlugin extends Plugin
         {
             return;
         }
+
+        log.info("Config changed: {} = {}", event.getKey(), event.getNewValue());
+
+        if (event.getKey().equals("testDrop") && event.getNewValue().equals("true"))
+        {
+            playDropSound();
+            configManager.setConfiguration("alwayshearsdrops", "testDrop", false);
+            return;
+        }
+
         reloadConfig();
     }
 
@@ -68,6 +85,8 @@ public class AlwaysHearDropsPlugin extends Plugin
         threshold = config.threshold();
         untradeableDrops = config.untradeableDrops();
         volume = (config.replayVolume() * SoundEffectVolume.HIGH) / 100;
+        log.info("Config reloaded: enabled={}, threshold={}, untradeable={}, volume={}",
+            enabled, threshold, untradeableDrops, volume);
     }
 
     @Subscribe
@@ -79,12 +98,7 @@ public class AlwaysHearDropsPlugin extends Plugin
         }
 
         String message = event.getMessage();
-
-        if (message.startsWith("::testdrop"))
-        {
-            playDropSound();
-            return;
-        }
+        log.debug("ChatMessage: type={}, message={}", event.getType(), message);
 
         if (event.getType() != ChatMessageType.GAMEMESSAGE
             && event.getType() != ChatMessageType.SPAM)
@@ -116,6 +130,7 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     private void playDropSound()
     {
+        log.info("Playing drop sound at volume {}", volume);
         client.playSoundEffect(SoundEffectID.ITEM_DROP, volume);
     }
 }
