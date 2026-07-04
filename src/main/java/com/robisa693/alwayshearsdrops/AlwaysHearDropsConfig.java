@@ -38,7 +38,7 @@ public interface AlwaysHearDropsConfig extends Config
     )
     default boolean untradeableDrops()
     {
-        return true;
+        return false;
     }
 
     @Range(min = 0, max = 100)

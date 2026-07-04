@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.SoundEffectVolume;
@@ -22,8 +21,6 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-
-@Slf4j
 
 @PluginDescriptor(
     name = "Always Hear Drops",
@@ -65,7 +62,6 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Override
     protected void startUp()
     {
-        log.info("Always Hear Drops plugin started");
         reloadConfig();
     }
 
@@ -76,8 +72,6 @@ public class AlwaysHearDropsPlugin extends Plugin
         {
             return;
         }
-
-        log.info("Config changed: {} = {}", event.getKey(), event.getNewValue());
 
         if (event.getKey().equals("testDrop"))
         {
@@ -149,15 +143,12 @@ public class AlwaysHearDropsPlugin extends Plugin
         untradeableDrops = config.untradeableDrops();
         volume = (config.replayVolume() * SoundEffectVolume.HIGH) / 100;
         soundEffectId = config.soundEffectId();
-        log.info("Config reloaded: threshold={}, untradeable={}, volume={}, soundId={}",
-            threshold, untradeableDrops, volume, soundEffectId);
     }
 
     @Subscribe
     public void onChatMessage(ChatMessage event)
     {
         String message = event.getMessage();
-        log.debug("ChatMessage: type={}, message={}", event.getType(), message);
 
         if (event.getType() != ChatMessageType.GAMEMESSAGE
             && event.getType() != ChatMessageType.SPAM)
@@ -189,7 +180,6 @@ public class AlwaysHearDropsPlugin extends Plugin
 
     private void playDropSound()
     {
-        log.info("Playing drop sound {} at volume {}", soundEffectId, volume);
         clientThread.invoke(() -> client.playSoundEffect(soundEffectId, volume));
     }
 }
