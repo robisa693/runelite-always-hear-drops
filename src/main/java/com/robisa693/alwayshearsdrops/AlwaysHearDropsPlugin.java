@@ -166,7 +166,9 @@ public class AlwaysHearDropsPlugin extends Plugin
             client.playSoundEffect(lowPrayerSoundEffectId, volume);
             if (lowPrayerRepeat)
             {
-                client.playSoundEffect(lowPrayerSoundEffectId, volume);
+                clientThread.invokeLater(() ->
+                    client.playSoundEffect(lowPrayerSoundEffectId, volume)
+                );
             }
         });
     }
