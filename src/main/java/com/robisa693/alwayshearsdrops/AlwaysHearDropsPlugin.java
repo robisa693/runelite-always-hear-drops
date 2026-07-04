@@ -179,8 +179,11 @@ public class AlwaysHearDropsPlugin extends Plugin
             client.playSoundEffect(lowPrayerSoundEffectId, volume);
             if (lowPrayerRepeat)
             {
-                log.info("Playing prayer sound #2 (same id)");
-                client.playSoundEffect(lowPrayerSoundEffectId, volume);
+                log.info("Queuing prayer sound #2 for next tick");
+                clientThread.invokeLater(() -> {
+                    log.info("Playing prayer sound #2 id={}", lowPrayerSoundEffectId);
+                    client.playSoundEffect(lowPrayerSoundEffectId, volume);
+                });
             }
         });
     }
