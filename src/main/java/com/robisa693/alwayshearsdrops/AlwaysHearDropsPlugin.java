@@ -25,7 +25,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 @PluginDescriptor(
     name = "Always Hear Drops",
     description = "Hear valuable/untradeable drop sounds even when Sound Effects volume is muted. If unmuted, your game's SE slider also controls the replay volume.",
-    tags = {"drops", "valuable", "untradeable", "sound", "notification", "loot"}
+    tags = {"drops", "valuable", "untradeable", "sound", "notification", "muted", "loot", "rare", "alert", "audio"}
 )
 public class AlwaysHearDropsPlugin extends Plugin
 {
