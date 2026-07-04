@@ -10,7 +10,7 @@ public interface AlwaysHearDropsConfig extends Config
 {
     @ConfigItem(
         keyName = "inGameSetup",
-        name = "<html><b style='color:orange'>Required In-Game Settings</b><br>Set these in OSRS Settings &gt; All Settings &gt; Loot Drops:<br>• Loot drop notification: <b>All</b><br>• Minimum item value: <b>100,000</b> (or whatever you desire)<br><br>Note: if Sound Effects volume is not muted,<br>your game SE slider also controls replay volume</html>",
+        name = "<html><b style='color:orange'>Required In-Game Settings</b><br>Set these in OSRS Settings &gt; All Settings &gt; Loot Drops:<br>• Loot drop notification: <b>ON</b><br>• Minimum item value: <b>100,000</b> (or whatever you desire)<br><br>Note: if Sound Effects volume is not muted,<br>your game SE slider also controls replay volume</html>",
         description = "These OSRS game settings must be configured for the plugin to receive drop chat messages.",
         position = 0
     )
