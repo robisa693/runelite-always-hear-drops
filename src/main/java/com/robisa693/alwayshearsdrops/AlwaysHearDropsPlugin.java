@@ -1,13 +1,16 @@
 package com.robisa693.alwayshearsdrops;
 
+import com.google.inject.Provides;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.inject.Inject;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.SoundEffectID;
 import net.runelite.api.SoundEffectVolume;
 import net.runelite.api.events.ChatMessage;
-import net.runelite.api.ChatMessageType;
+import net.runelite.client.chat.ChatCommandManager;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
@@ -33,15 +36,31 @@ public class AlwaysHearDropsPlugin extends Plugin
     @Inject
     private Client client;
 
+    @Inject
+    private ChatCommandManager chatCommandManager;
+
     private boolean enabled;
     private int threshold;
     private boolean untradeableDrops;
     private int volume;
 
+    @Provides
+    AlwaysHearDropsConfig getConfig(ConfigManager configManager)
+    {
+        return configManager.getConfig(AlwaysHearDropsConfig.class);
+    }
+
     @Override
     protected void startUp()
     {
         reloadConfig();
+        chatCommandManager.registerCommandAsync("testdrop", (chatMessage, message) -> playDropSound());
+    }
+
+    @Override
+    protected void shutDown()
+    {
+        chatCommandManager.unregisterCommand("testdrop");
     }
 
     @Subscribe
