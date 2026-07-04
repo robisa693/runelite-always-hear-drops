@@ -53,6 +53,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     private int lowPrayerSoundEffectId;
     private boolean lowPrayerRepeat;
     private boolean prayerSoundPlayed;
+    private int prayerRepeatPending;
 
     @Provides
     AlwaysHearDropsConfig getConfig(ConfigManager configManager)
@@ -64,6 +65,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     protected void startUp()
     {
         log.info("Plugin started");
+        prayerRepeatPending = 0;
         reloadConfig();
     }
 
@@ -102,12 +104,23 @@ public class AlwaysHearDropsPlugin extends Plugin
         lowPrayerThreshold = config.lowPrayerThreshold();
         lowPrayerSoundEffectId = config.lowPrayerSoundEffectId();
         lowPrayerRepeat = config.lowPrayerRepeat();
+        if (!lowPrayerRepeat)
+        {
+            prayerRepeatPending = 0;
+        }
         log.info("reloadConfig: enabled={}, threshold={}, repeat={}, soundId={}", lowPrayerEnabled, lowPrayerThreshold, lowPrayerRepeat, lowPrayerSoundEffectId);
     }
 
     @Subscribe
     public void onGameTick(GameTick event)
     {
+        if (prayerRepeatPending > 0)
+        {
+            log.info("onGameTick: playing repeat sound #2");
+            client.playSoundEffect(lowPrayerSoundEffectId, volume);
+            prayerRepeatPending = 0;
+        }
+
         if (!lowPrayerEnabled)
         {
             return;
@@ -179,11 +192,8 @@ public class AlwaysHearDropsPlugin extends Plugin
             client.playSoundEffect(lowPrayerSoundEffectId, volume);
             if (lowPrayerRepeat)
             {
-                log.info("Queuing prayer sound #2 for next tick");
-                clientThread.invokeLater(() -> {
-                    log.info("Playing prayer sound #2 id={}", lowPrayerSoundEffectId);
-                    client.playSoundEffect(lowPrayerSoundEffectId, volume);
-                });
+                log.info("Setting repeat for next tick");
+                prayerRepeatPending = 1;
             }
         });
     }
