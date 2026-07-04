@@ -102,12 +102,12 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "lowPrayerSoundEffectId",
         name = "Low Prayer Sound ID",
-        description = "The game sound effect ID to play for low prayer. 932=bell.",
+        description = "The game sound effect ID to play for low prayer. 2674=prayer recharge, 932=bell.",
         position = 8
     )
     default int lowPrayerSoundEffectId()
     {
-        return 932;
+        return 2674;
     }
 
     @ConfigItem(
