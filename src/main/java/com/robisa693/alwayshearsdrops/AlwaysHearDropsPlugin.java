@@ -19,8 +19,8 @@ import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
     name = "Always Hear Alerts",
-    description = "Personal audio alerts (drops, low prayer, more) that play even if in-game sound is muted.",
-    tags = {"drops", "prayer", "alerts", "sound", "notification", "muted", "loot", "alert", "audio"}
+    description = "Personal audio alerts (drops, pets, collection log, low prayer, low HP) that play even if in-game sound is muted.",
+    tags = {"drops", "prayer", "hitpoints", "hp", "pet", "collection", "alerts", "sound", "notification", "muted", "loot", "alert", "audio"}
 )
 public class AlwaysHearDropsPlugin extends Plugin
 {
@@ -29,6 +29,15 @@ public class AlwaysHearDropsPlugin extends Plugin
     );
     private static final Pattern UNTRADEABLE_DROP_PATTERN = Pattern.compile(
         "Untradeable drop: (.+)"
+    );
+    // "You have a funny feeling like you're being followed", "... like you
+    // would have been followed", "You feel something weird sneaking into
+    // your backpack" - all three pet messages share one of these fragments.
+    private static final Pattern PET_PATTERN = Pattern.compile(
+        "funny feeling|weird sneaking"
+    );
+    private static final Pattern COLLECTION_LOG_PATTERN = Pattern.compile(
+        "New item added to your collection log: (.+)"
     );
 
     @Inject
@@ -44,12 +53,22 @@ public class AlwaysHearDropsPlugin extends Plugin
     private boolean untradeableDrops;
     private int volume;
     private int soundEffectId;
+    private boolean petEnabled;
+    private int petSoundEffectId;
+    private boolean collectionLogEnabled;
+    private int collectionLogSoundEffectId;
     private boolean lowPrayerEnabled;
     private int lowPrayerThreshold;
     private int lowPrayerSoundEffectId;
     private boolean lowPrayerRepeat;
     private boolean prayerSoundPlayed;
     private int prayerRepeatPending;
+    private boolean lowHpEnabled;
+    private int lowHpThreshold;
+    private int lowHpSoundEffectId;
+    private boolean lowHpRepeat;
+    private boolean hpSoundPlayed;
+    private int hpRepeatPending;
 
     @Provides
     AlwaysHearDropsConfig getConfig(ConfigManager configManager)
@@ -61,6 +80,7 @@ public class AlwaysHearDropsPlugin extends Plugin
     protected void startUp()
     {
         prayerRepeatPending = 0;
+        hpRepeatPending = 0;
         reloadConfig();
     }
 
@@ -72,11 +92,12 @@ public class AlwaysHearDropsPlugin extends Plugin
             return;
         }
 
-        if (event.getKey().equals("testDrop"))
+        Integer testSoundId = testSoundFor(event.getKey());
+        if (testSoundId != null)
         {
             if (event.getNewValue().equals("true"))
             {
-                playDropSound();
+                playSound(testSoundId);
             }
             return;
         }
@@ -89,12 +110,36 @@ public class AlwaysHearDropsPlugin extends Plugin
         reloadConfig();
     }
 
+    /** The sound the given test-toggle key previews, or null for non-test keys. */
+    private Integer testSoundFor(String key)
+    {
+        switch (key)
+        {
+            case "testDrop":
+                return config.soundEffectId();
+            case "testPet":
+                return config.petSoundEffectId();
+            case "testCollectionLog":
+                return config.collectionLogSoundEffectId();
+            case "testPrayer":
+                return config.lowPrayerSoundEffectId();
+            case "testHp":
+                return config.lowHpSoundEffectId();
+            default:
+                return null;
+        }
+    }
+
     private void reloadConfig()
     {
         threshold = config.threshold();
         untradeableDrops = config.untradeableDrops();
         volume = (config.replayVolume() * SoundEffectVolume.HIGH) / 100;
         soundEffectId = config.soundEffectId();
+        petEnabled = config.petEnabled();
+        petSoundEffectId = config.petSoundEffectId();
+        collectionLogEnabled = config.collectionLogEnabled();
+        collectionLogSoundEffectId = config.collectionLogSoundEffectId();
         lowPrayerEnabled = config.lowPrayerEnabled();
         lowPrayerThreshold = config.lowPrayerThreshold();
         lowPrayerSoundEffectId = config.lowPrayerSoundEffectId();
@@ -102,6 +147,14 @@ public class AlwaysHearDropsPlugin extends Plugin
         if (!lowPrayerRepeat)
         {
             prayerRepeatPending = 0;
+        }
+        lowHpEnabled = config.lowHpEnabled();
+        lowHpThreshold = config.lowHpThreshold();
+        lowHpSoundEffectId = config.lowHpSoundEffectId();
+        lowHpRepeat = config.lowHpRepeat();
+        if (!lowHpRepeat)
+        {
+            hpRepeatPending = 0;
         }
     }
 
@@ -113,24 +166,44 @@ public class AlwaysHearDropsPlugin extends Plugin
             client.playSoundEffect(lowPrayerSoundEffectId, volume);
             prayerRepeatPending = 0;
         }
-
-        if (!lowPrayerEnabled)
+        if (hpRepeatPending > 0)
         {
-            return;
+            client.playSoundEffect(lowHpSoundEffectId, volume);
+            hpRepeatPending = 0;
         }
 
-        int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
-        if (currentPrayer <= lowPrayerThreshold)
+        if (lowPrayerEnabled)
         {
-            if (!prayerSoundPlayed)
+            int currentPrayer = client.getBoostedSkillLevel(Skill.PRAYER);
+            if (currentPrayer <= lowPrayerThreshold)
             {
-                playPrayerSound();
-                prayerSoundPlayed = true;
+                if (!prayerSoundPlayed)
+                {
+                    playPrayerSound();
+                    prayerSoundPlayed = true;
+                }
+            }
+            else
+            {
+                prayerSoundPlayed = false;
             }
         }
-        else
+
+        if (lowHpEnabled)
         {
-            prayerSoundPlayed = false;
+            int currentHp = client.getBoostedSkillLevel(Skill.HITPOINTS);
+            if (currentHp <= lowHpThreshold)
+            {
+                if (!hpSoundPlayed)
+                {
+                    playHpSound();
+                    hpSoundPlayed = true;
+                }
+            }
+            else
+            {
+                hpSoundPlayed = false;
+            }
         }
     }
 
@@ -149,27 +222,35 @@ public class AlwaysHearDropsPlugin extends Plugin
         if (valuableMatcher.find())
         {
             String valueStr = valuableMatcher.group(2).replace(",", "");
-            int dropValue = Integer.parseInt(valueStr);
+            long dropValue = Long.parseLong(valueStr);
             if (dropValue >= threshold)
             {
-                playDropSound();
+                playSound(soundEffectId);
             }
             return;
         }
 
-        if (untradeableDrops)
+        if (petEnabled && PET_PATTERN.matcher(message).find())
         {
-            Matcher untradeableMatcher = UNTRADEABLE_DROP_PATTERN.matcher(message);
-            if (untradeableMatcher.find())
-            {
-                playDropSound();
-            }
+            playSound(petSoundEffectId);
+            return;
+        }
+
+        if (collectionLogEnabled && COLLECTION_LOG_PATTERN.matcher(message).find())
+        {
+            playSound(collectionLogSoundEffectId);
+            return;
+        }
+
+        if (untradeableDrops && UNTRADEABLE_DROP_PATTERN.matcher(message).find())
+        {
+            playSound(soundEffectId);
         }
     }
 
-    private void playDropSound()
+    private void playSound(int soundId)
     {
-        clientThread.invoke(() -> client.playSoundEffect(soundEffectId, volume));
+        clientThread.invoke(() -> client.playSoundEffect(soundId, volume));
     }
 
     private void playPrayerSound()
@@ -179,6 +260,17 @@ public class AlwaysHearDropsPlugin extends Plugin
             if (lowPrayerRepeat)
             {
                 prayerRepeatPending = 1;
+            }
+        });
+    }
+
+    private void playHpSound()
+    {
+        clientThread.invoke(() -> {
+            client.playSoundEffect(lowHpSoundEffectId, volume);
+            if (lowHpRepeat)
+            {
+                hpRepeatPending = 1;
             }
         });
     }

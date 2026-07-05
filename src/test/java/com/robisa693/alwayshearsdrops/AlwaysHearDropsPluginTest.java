@@ -13,6 +13,12 @@ public class AlwaysHearDropsPluginTest
     private static final Pattern UNTRADEABLE_DROP_PATTERN = Pattern.compile(
         "Untradeable drop: (.+)"
     );
+    private static final Pattern PET_PATTERN = Pattern.compile(
+        "funny feeling|weird sneaking"
+    );
+    private static final Pattern COLLECTION_LOG_PATTERN = Pattern.compile(
+        "New item added to your collection log: (.+)"
+    );
 
     @Test
     public void testValuableDropSingle()
@@ -86,5 +92,42 @@ public class AlwaysHearDropsPluginTest
         Matcher m = UNTRADEABLE_DROP_PATTERN.matcher(msg);
         assertTrue(m.find());
         assertTrue(m.group(1).trim().startsWith("111111"));
+    }
+
+    @Test
+    public void testPetFollowed()
+    {
+        String msg = "You have a funny feeling like you're being followed.";
+        assertTrue(PET_PATTERN.matcher(msg).find());
+    }
+
+    @Test
+    public void testPetWouldHaveBeenFollowed()
+    {
+        String msg = "You have a funny feeling like you would have been followed...";
+        assertTrue(PET_PATTERN.matcher(msg).find());
+    }
+
+    @Test
+    public void testPetBackpack()
+    {
+        String msg = "You feel something weird sneaking into your backpack.";
+        assertTrue(PET_PATTERN.matcher(msg).find());
+    }
+
+    @Test
+    public void testPetNoFalsePositive()
+    {
+        String msg = "You have a feeling this test should not match.";
+        assertFalse(PET_PATTERN.matcher(msg).find());
+    }
+
+    @Test
+    public void testCollectionLog()
+    {
+        String msg = "New item added to your collection log: <col=ef1020>Dragon warhammer</col>";
+        Matcher m = COLLECTION_LOG_PATTERN.matcher(msg);
+        assertTrue(m.find());
+        assertTrue(m.group(1).contains("Dragon warhammer"));
     }
 }
