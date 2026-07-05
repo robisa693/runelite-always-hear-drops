@@ -272,13 +272,13 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "lowHpSoundEffectId",
         name = "Low HP Sound ID",
-        description = "The game sound effect ID to play for low hitpoints. 932=bell, 2674=prayer recharge.",
+        description = "The game sound effect ID to play for low hitpoints. 2136=alarm, 932=bell, 2674=prayer recharge.",
         position = 23,
         section = hitpointsSection
     )
     default int lowHpSoundEffectId()
     {
-        return 932;
+        return 2136;
     }
 
     @ConfigItem(

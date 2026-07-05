@@ -42,7 +42,7 @@ Always Hear Alerts uses OSRS's built-in sound effect engine, letting you pick an
 
 - **Low HP sound** – Enable low hitpoints alerts (default: OFF).
 - **Low HP threshold** – Play sound when hitpoints are at or below this value (default: 20).
-- **Low HP Sound ID** – The game sound effect to play for low HP (default: 932 — bell).
+- **Low HP Sound ID** – The game sound effect to play for low HP (default: 2136).
 - **Repeat HP sound** – Play the sound twice in sequence (one tick apart) for extra noticeability.
 - **Test HP sound** – Toggle to preview the configured HP sound.
 
