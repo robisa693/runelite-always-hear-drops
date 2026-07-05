@@ -19,7 +19,7 @@ import net.runelite.client.plugins.PluginDescriptor;
 
 @PluginDescriptor(
     name = "Always Hear Alerts",
-    description = "Personal audio alerts (drops, pets, collection log, low prayer, low HP) that play even if in-game sound is muted.",
+    description = "Hear alerts even with game sound muted: valuable drops, pets, collection log, low prayer and low HP.",
     tags = {"drops", "prayer", "hitpoints", "hp", "pet", "collection", "alerts", "sound", "notification", "muted", "loot", "alert", "audio"}
 )
 public class AlwaysHearDropsPlugin extends Plugin
