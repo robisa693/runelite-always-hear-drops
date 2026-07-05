@@ -79,7 +79,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "testDrop",
         name = "Test drop sound",
-        description = "Toggle to test the drop sound. Uncheck then recheck to test again.",
+        description = "Click to play the drop sound. Every click plays it, ticked or not.",
         position = 6,
         section = dropsSection
     )
@@ -123,7 +123,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "testPet",
         name = "Test pet sound",
-        description = "Toggle to test the pet sound. Uncheck then recheck to test again.",
+        description = "Click to play the pet sound. Every click plays it, ticked or not.",
         position = 10,
         section = specialSection
     )
@@ -160,7 +160,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "testCollectionLog",
         name = "Test collection log sound",
-        description = "Toggle to test the collection log sound. Uncheck then recheck to test again.",
+        description = "Click to play the collection log sound. Every click plays it, ticked or not.",
         position = 13,
         section = specialSection
     )
@@ -228,7 +228,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "testPrayer",
         name = "Test prayer sound",
-        description = "Toggle to test the low prayer sound. Uncheck then recheck to test again.",
+        description = "Click to play the low prayer sound. Every click plays it, ticked or not.",
         position = 19,
         section = prayerSection
     )
@@ -296,7 +296,7 @@ public interface AlwaysHearDropsConfig extends Config
     @ConfigItem(
         keyName = "testHp",
         name = "Test HP sound",
-        description = "Toggle to test the low HP sound. Uncheck then recheck to test again.",
+        description = "Click to play the low HP sound. Every click plays it, ticked or not.",
         position = 25,
         section = hitpointsSection
     )

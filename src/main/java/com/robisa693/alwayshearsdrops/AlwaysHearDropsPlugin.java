@@ -95,10 +95,11 @@ public class AlwaysHearDropsPlugin extends Plugin
         Integer testSoundId = testSoundFor(event.getKey());
         if (testSoundId != null)
         {
-            if (event.getNewValue().equals("true"))
-            {
-                playSound(testSoundId);
-            }
+            // Play on every toggle, ticked or unticked: the config panel does
+            // not refresh from programmatic writes, so resetting the checkbox
+            // to false behind its back would leave a stale UI and dead clicks.
+            // This way every single click previews the sound.
+            playSound(testSoundId);
             return;
         }
 

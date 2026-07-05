@@ -22,13 +22,13 @@ Always Hear Alerts uses OSRS's built-in sound effect engine, letting you pick an
 - **Drop Sound ID** – The game sound effect to play for drops (default: 6765 — unique drop).
 - **Drop value Threshold** – Minimum coin value to trigger the sound (default: 0 = all valuable drops).
 - **Untradeable drops** – Also play sound for untradeable drops (default: OFF).
-- **Test drop sound** – Toggle to preview the configured drop sound.
+- **Test drop sound** – Click to play the drop sound (every click plays it).
 
 ### Pet & Collection Log
 
 - **Pet drop sound** – Play a sound on the "funny feeling" pet messages (default: ON, sound 4218 — league trophy).
 - **Collection log sound** – Play a sound when a new item is added to your collection log (default: ON, sound 3406 — coins jingle). Requires the in-game collection log message setting, see below.
-- **Test pet / collection log sound** – Toggles to preview each sound.
+- **Test pet / collection log sound** – Click to play each sound (every click plays it).
 
 ### Low Prayer
 
@@ -36,7 +36,7 @@ Always Hear Alerts uses OSRS's built-in sound effect engine, letting you pick an
 - **Low Prayer threshold** – Play sound when prayer points are at or below this value (default: 20).
 - **Low Prayer Sound ID** – The game sound effect to play for low prayer (default: 2674 — prayer recharge).
 - **Repeat prayer sound** – Play the sound twice in sequence (one tick apart) for extra noticeability.
-- **Test prayer sound** – Toggle to preview the configured prayer sound.
+- **Test prayer sound** – Click to play the prayer sound (every click plays it).
 
 ### Low Hitpoints
 
@@ -44,7 +44,7 @@ Always Hear Alerts uses OSRS's built-in sound effect engine, letting you pick an
 - **Low HP threshold** – Play sound when hitpoints are at or below this value (default: 20).
 - **Low HP Sound ID** – The game sound effect to play for low HP (default: 2136).
 - **Repeat HP sound** – Play the sound twice in sequence (one tick apart) for extra noticeability.
-- **Test HP sound** – Toggle to preview the configured HP sound.
+- **Test HP sound** – Click to play the HP sound (every click plays it).
 
 ## Required In-Game Settings
 
